@@ -2,150 +2,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Class Attendance</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f3f6fc;
-      color: #172033;
-    }
-    header {
-      background: #4338ca;
-      color: white;
-      padding: 25px 20px;
-      text-align: center;
-    }
-    header h1 { margin: 0 0 8px; }
-    main {
-      max-width: 650px;
-      margin: 28px auto;
-      padding: 0 16px;
-    }
-    .card {
-      background: white;
-      padding: 24px;
-      margin-bottom: 20px;
-      border-radius: 16px;
-      box-shadow: 0 5px 20px #18264a12;
-    }
-    label {
-      display: block;
-      margin: 16px 0 7px;
-      font-weight: bold;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 13px;
-      border-radius: 9px;
-      font-size: 16px;
-    }
-    input, select {
-      border: 1px solid #ccd3e0;
-      background: white;
-    }
-    button {
-      margin-top: 18px;
-      border: none;
-      background: #4338ca;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
-    .note { color: #5d6678; font-size: 14px; line-height: 1.6; }
-    #status { white-space: pre-line; line-height: 1.6; }
-    footer { text-align: center; padding: 20px; color: #687386; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class Attendance Portal</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f6fc;color:#172033}
+header{background:#4338ca;color:white;padding:25px 15px;text-align:center}
+header h1{margin:0 0 8px}
+main{max-width:650px;margin:28px auto;padding:0 16px}
+.card{background:white;padding:24px;margin-bottom:20px;border-radius:16px;box-shadow:0 5px 20px #18264a12}
+label{display:block;margin:16px 0 7px;font-weight:bold}
+input,select,button{width:100%;padding:13px;border-radius:9px;font-size:16px}
+input,select{border:1px solid #ccd3e0;background:white}
+button{margin-top:18px;border:none;background:#4338ca;color:white;font-weight:bold;cursor:pointer}
+.note{color:#5d6678;font-size:14px;line-height:1.6}
+#status{white-space:pre-line;line-height:1.6}
+</style>
 </head>
 <body>
-  <header>
-    <h1>🎓 Class Attendance</h1>
-    <p>Smart Attendance Portal</p>
-  </header>
+<header>
+<h1>🎓 Class Attendance</h1>
+<p>Smart Attendance Portal</p>
+</header>
+<main>
+<section class="card">
+<h2>Student Attendance</h2>
+<p class="note">Enter your name and select your subject.</p>
 
-  <main>
-    <section class="card">
-      <h2>Student Attendance</h2>
-      <p class="note">Enter your details and select your subject.</p>
+<label for="studentName">Full Name</label>
+<input id="studentName" placeholder="Enter your full name" autocomplete="name">
 
-      <label for="roll">Roll Number</label>
-      <input id="roll" placeholder="Enter your roll number"
-             autocomplete="off">
+<label for="subject">Select Subject</label>
+<select id="subject">
+<option value="">Choose your subject</option>
+<option>ECE</option>
+<option>Physics</option>
+<option>Engineering Chemistry</option>
+<option>Web Technology</option>
+<option>C Language</option>
+<option>Engineering Mathematics</option>
+</select>
 
-      <label for="subject">Select Subject</label>
-      <select id="subject">
-        <option value="">Choose your subject</option>
-        <option>Mathematics</option>
-        <option>Physics</option>
-        <option>Programming</option>
-        <option>English</option>
-        <option>Other</option>
-      </select>
+<button onclick="checkLocation()">Verify Classroom Location</button>
+<p id="status" role="status" aria-live="polite">Location verification has not started.</p>
+<p class="note">Location permission is required. This demo does not yet record attendance.</p>
+</section>
 
-      <button id="locationBtn" onclick="checkLocation()">
-        Verify Classroom Location
-      </button>
+<section class="card">
+<h2>My Attendance</h2>
+<p class="note">Your private subject-wise attendance will appear here after secure login and database setup.</p>
+</section>
+</main>
 
-      <p id="status" role="status" aria-live="polite">
-        Location verification has not started.
-      </p>
-      <p class="note">
-        Location permission is required. Attendance will only be recorded
-        after a secure backend and student verification are configured.
-      </p>
-    </section>
+<script>
+function checkLocation(){
+const status=document.getElementById("status");
+const name=document.getElementById("studentName").value.trim();
+const subject=document.getElementById("subject").value;
 
-    <section class="card">
-      <h2>My Attendance</h2>
-      <p class="note">
-        Your subject-wise attendance history will appear here after secure
-        student login and database setup.
-      </p>
-    </section>
-  </main>
-
-  <footer>Class Attendance Portal</footer>
-
-  <script>
-    function checkLocation() {
-      const status = document.getElementById("status");
-      const roll = document.getElementById("roll").value.trim();
-      const subject = document.getElementById("subject").value;
-
-      if (!roll || !subject) {
-        status.textContent = "Please enter your roll number and select a subject.";
-        return;
-      }
-
-      if (!navigator.geolocation) {
-        status.textContent = "Your browser does not support location verification.";
-        return;
-      }
-
-      status.textContent = "Checking your location...";
-
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          status.textContent =
-            "Location received.\n" +
-            "Accuracy: approximately " +
-            Math.round(position.coords.accuracy) +
-            " metres.\n\n" +
-            "Next step: classroom boundary verification and secure login " +
-            "must be configured before attendance can be recorded.";
-        },
-        function(error) {
-          status.textContent =
-            "Could not verify location. Please enable location permission " +
-            "and try again. Error: " + error.message;
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-      );
-    }
-  </script>
+if(!name||!subject){
+status.textContent="Please enter your full name and select a subject.";
+return;
+}
+if(!navigator.geolocation){
+status.textContent="Your browser does not support location verification.";
+return;
+}
+status.textContent="Checking your location...";
+navigator.geolocation.getCurrentPosition(
+function(position){
+status.textContent="Location received.\nAccuracy: approximately "+
+Math.round(position.coords.accuracy)+
+" metres.\n\nClassroom boundary verification and secure student login are still required. Attendance has NOT been recorded.";
+},
+function(error){
+status.textContent="Could not verify location. Please enable location permission and try again. "+error.message;
+},
+{enableHighAccuracy:true,timeout:15000,maximumAge:0}
+);
+}
+</script>
 </body>
 </html>
